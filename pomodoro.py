@@ -183,19 +183,58 @@ tk.Spinbox(schedules, from_=0, to=59, textvariable=long_break_duration_second,wi
 tk.Button(schedules, text="Dapatkan Nilai", command=get_timer_values).grid(row=9, column=0, columnspan=6, pady=20)
 
 def show_popup(message, time):
-    # Membuat jendela pop-up
-    root = tk.Tk()
-    root.title("Alarm")
-    root.configure(background="#1D1F21")
-    root.attributes("-topmost", 1)
-    root.attributes('-fullscreen', True)
+    def countdown_popup(t):
+        if t >= 0:
+            mins, secs = divmod(t, 60)
+            timer = '{:02d}:{:02d}'.format(mins, secs)
+            remaining_label.config(text=timer)
+            
+            # Update the remaining time text
+            if mins > 0:
+                remaining_text = f"About {mins} minute {secs} second{'s' if mins > 1 else ''} remaining"
+            else:
+                remaining_text = f"{secs} second{'s' if secs > 1 else ''} remaining"
 
-    label = tk.Label(root, text=message, font=("Helvetica", 16), fg="white", bg="#1D1F21")
-    label.pack(expand=True)
-    
-    # Menutup jendela setelah 5 detik
-    root.after(time, root.destroy)  # 5000 ms = 5 detik
-    root.mainloop()
+            # Update the progress bar
+            progress_bar['value'] = (t / time) * 100
+            
+            remaining_label.config(text=remaining_text)
+            
+            # Call countdown_popup again after 1000ms (1 second)
+            popup.after(500, countdown_popup, t - 1)
+        else:
+            # remaining_label.config(text="Time's up!")
+            popup.destroy()  # Close the window
+            
+    # Create the main window
+    popup = tk.Tk()
+    popup.title("Coffee Break Timer")
+    popup.configure(background="#1D1F21")
+    popup.attributes("-topmost", 1)
+    popup.attributes('-fullscreen', True)
+
+    # Create a title label
+    title_label = tk.Label(popup, text=message, font=("Arial", 24), bg="#1D1F21", fg="white")
+    title_label.pack(pady=(180, 20))
+
+    # Create a style for the progress bar
+    style = ttk.Style()
+    style.theme_use('clam')  # You can choose other themes like 'alt', 'default', etc.
+    style.configure("TProgressbar", thickness=5, troughcolor="#1D1F21", background="#D9D9D9", bordercolor="#D9D9D9")
+
+    # Create a progress bar
+    progress_bar = ttk.Progressbar(popup, orient="horizontal", length=600, mode="determinate", style="TProgressbar")
+    progress_bar.pack(pady=20)
+
+    # Create a remaining time label
+    remaining_label = tk.Label(popup, text="", font=("Helvetica", 16), bg="#1D1F21", fg="white")
+    remaining_label.pack(pady=10)
+
+    # Start the countdown_popup from 300 seconds (5 minutes)
+    countdown_popup(time)
+
+    # Start the Tkinter event loop
+    popup.mainloop()
 
 def countdown(t):
     while t:
@@ -226,7 +265,7 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
             print(f"\nCountdown Mini Break: {mini_break_duration // 60} menit")
             countdown(mini_break_duration)  # Countdown untuk jam1
             print("Alarm Mini Break berbunyi!")
-            show_popup("Alarm Mini Break berbunyi!", mini_break_for * 1000)  # Tampilkan alarm jam1
+            show_popup("Alarm Mini Break berbunyi!", mini_break_for)  # Tampilkan alarm jam1
 
             # Kurangi waktu jam2 dengan jam1
             long_break_duration -= mini_break_duration
@@ -239,7 +278,7 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
             countdown(long_break_duration)  # Countdown untuk jam2
             print("Alarm Long Break berbunyi!")
             print("Jam sudah habis!")
-            show_popup("Alarm Long Break berbunyi!", long_break_for * 1000)  # Tampilkan alarm jam2
+            show_popup("Alarm Long Break berbunyi!", long_break_for)  # Tampilkan alarm jam2
             break
 
 # Run the application
