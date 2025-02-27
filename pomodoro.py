@@ -226,7 +226,7 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
             print(f"\nCountdown Mini Break: {mini_break_duration // 60} menit")
             countdown(mini_break_duration)  # Countdown untuk jam1
             print("Alarm Mini Break berbunyi!")
-            show_popup("Alarm Mini Break berbunyi!", mini_break_for)  # Tampilkan alarm jam1
+            show_popup("Alarm Mini Break berbunyi!", mini_break_for * 1000)  # Tampilkan alarm jam1
 
             # Kurangi waktu jam2 dengan jam1
             long_break_duration -= mini_break_duration
@@ -239,7 +239,7 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
             countdown(long_break_duration)  # Countdown untuk jam2
             print("Alarm Long Break berbunyi!")
             print("Jam sudah habis!")
-            show_popup("Alarm Long Break berbunyi!", long_break_for)  # Tampilkan alarm jam2
+            show_popup("Alarm Long Break berbunyi!", long_break_for * 1000)  # Tampilkan alarm jam2
             break
 
 # Run the application
