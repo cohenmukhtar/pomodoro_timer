@@ -71,20 +71,7 @@ restore_defaults_button.grid(row=10, padx=25, pady=10)
 # Fungsi untuk mendapatkan nilai dari Spinbox
 def get_timer_values():
     try:
-        # mini_break_for_hours = mini_break_for_hour.get()
-        # mini_break_for_minutes = mini_break_for_minute.get()
-        # mini_break_for_seconds = mini_break_for_second.get()
-        # mini_break_duration_hours = mini_break_duration_hour.get()
-        # mini_break_duration_minutes = mini_break_duration_minute.get()
-        # mini_break_duration_seconds = mini_break_duration_second.get()
-        
-        # long_break_for_hours = long_break_for_hour.get()
-        # long_break_for_minutes = long_break_for_minute.get()
-        # long_break_for_seconds = long_break_for_second.get()
-        # long_break_duration_hours = long_break_duration_hour.get()
-        # long_break_duration_minutes = long_break_duration_minute.get()
-        # long_break_duration_seconds = long_break_duration_second.get()
-         # Ambil nilai dari Spinbox
+        # Ambil nilai dari Spinbox
         mini_break_for = (mini_break_for_hour.get() * 3600 +
                                mini_break_for_minute.get() * 60 +
                                mini_break_for_second.get())
@@ -223,15 +210,11 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
     interval = (long_break_duration / mini_break_duration)
     print(f"Interval awal: {interval:.1f} kali")
 
-    # Waktu mundur untuk jam1 dan jam2
-    mini_break_for = mini_break_for
-    mini_break_duration = mini_break_duration  # dalam detik
-    long_break_for = long_break_for
-    long_break_duration = long_break_duration  # dalam detik
-    # print(f"Mini Break for: {mini_break_for // 3600} jam {(mini_break_for % 3600) // 60} menit {mini_break_for % 60} detik")
-    # print(f"Mini Break duration: {mini_break_duration} menit")
-    # print(f"Long Break for: {long_break_for} menit")
-    # print(f"Long Break duration: {long_break_duration} menit")    
+    # Waktu mundur
+    print(f"Mini Break for: {mini_break_for // 3600} jam {(mini_break_for % 3600) // 60} menit {mini_break_for % 60} detik")
+    print(f"Mini Break duration: {mini_break_duration // 3600} jam {(mini_break_duration % 3600) // 60} menit {mini_break_duration % 60} detik")
+    print(f"Long Break for: {long_break_for // 3600} jam {(long_break_for % 3600) // 60} menit {long_break_for % 60} detik")
+    print(f"Long Break duration: {long_break_duration // 3600} jam {(long_break_duration % 3600) // 60} menit {long_break_duration % 60} detik")
 
 # Run the application
 root.mainloop()
