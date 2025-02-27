@@ -1,6 +1,8 @@
 import time
 import tkinter as tk
 from tkinter import ttk, StringVar, messagebox
+import threading
+import numpy as np
 
 # Initialize the main window
 root = tk.Tk()
@@ -70,40 +72,40 @@ restore_defaults_button.grid(row=10, padx=25, pady=10)
 
 # Fungsi untuk mendapatkan nilai dari Spinbox
 def get_timer_values():
-    try:
-        # Ambil nilai dari Spinbox
-        mini_break_for = (mini_break_for_hour.get() * 3600 +
-                               mini_break_for_minute.get() * 60 +
-                               mini_break_for_second.get())
-        mini_break_duration = (mini_break_duration_hour.get() * 3600 +
-                               mini_break_duration_minute.get() * 60 +
-                               mini_break_duration_second.get())
-        long_break_for = (long_break_for_hour.get() * 3600 +
-                               long_break_for_minute.get() * 60 +
-                               long_break_for_second.get())
-        long_break_duration = (long_break_duration_hour.get() * 3600 +
-                               long_break_duration_minute.get() * 60 +
-                               long_break_duration_second.get())
+    # Ambil nilai dari Spinbox
+    mini_break_for = (mini_break_for_hour.get() * 3600 +
+                            mini_break_for_minute.get() * 60 +
+                            mini_break_for_second.get())
+    mini_break_duration = (mini_break_duration_hour.get() * 3600 +
+                            mini_break_duration_minute.get() * 60 +
+                            mini_break_duration_second.get())
+    long_break_for = (long_break_for_hour.get() * 3600 +
+                            long_break_for_minute.get() * 60 +
+                            long_break_for_second.get())
+    long_break_duration = (long_break_duration_hour.get() * 3600 +
+                            long_break_duration_minute.get() * 60 +
+                            long_break_duration_second.get())
 
-        # Panggil hitung_mundur dengan durasi
-        hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_break_duration)
+    # Reset Spinbox ke 0
+    reset_spinboxes()
 
-        # Reset Spinbox ke 0
-        mini_break_for_hour.set(0)
-        mini_break_for_minute.set(0)
-        mini_break_for_second.set(0)
-        mini_break_duration_hour.set(0)
-        mini_break_duration_minute.set(0)
-        mini_break_duration_second.set(0)
+    # Jalankan hitung mundur dengan durasi di thread terpisah
+    threading.Thread(target=hitung_mundur, args=(mini_break_for, mini_break_duration, long_break_for, long_break_duration)).start()
 
-        long_break_for_hour.set(0)
-        long_break_for_minute.set(0)
-        long_break_for_second.set(0)
-        long_break_duration_hour.set(0)
-        long_break_duration_minute.set(0)
-        long_break_duration_second.set(0)
-    except ValueError:
-        messagebox.showerror("Input Error", "Please enter valid numbers.")
+def reset_spinboxes():
+    mini_break_for_hour.set(0)
+    mini_break_for_minute.set(0)
+    mini_break_for_second.set(0)
+    mini_break_duration_hour.set(0)
+    mini_break_duration_minute.set(0)
+    mini_break_duration_second.set(0)
+
+    long_break_for_hour.set(0)
+    long_break_for_minute.set(0)
+    long_break_for_second.set(0)
+    long_break_duration_hour.set(0)
+    long_break_duration_minute.set(0)
+    long_break_duration_second.set(0)
 
 # Fungsi untuk validasi input
 def validate_input(P, max_val):
@@ -215,6 +217,30 @@ def hitung_mundur(mini_break_for, mini_break_duration, long_break_for, long_brea
     print(f"Mini Break duration: {mini_break_duration // 3600} jam {(mini_break_duration % 3600) // 60} menit {mini_break_duration % 60} detik")
     print(f"Long Break for: {long_break_for // 3600} jam {(long_break_for % 3600) // 60} menit {long_break_for % 60} detik")
     print(f"Long Break duration: {long_break_duration // 3600} jam {(long_break_duration % 3600) // 60} menit {long_break_duration % 60} detik")
+
+    reset_spinboxes()
+
+    # Mulai countdown untuk jam1 dan jam2
+    for i in np.arange(interval):
+        if interval > 1.0:
+            print(f"\nCountdown Mini Break: {mini_break_duration // 60} menit")
+            countdown(mini_break_duration)  # Countdown untuk jam1
+            print("Alarm Mini Break berbunyi!")
+            show_popup("Alarm Mini Break berbunyi!", mini_break_for)  # Tampilkan alarm jam1
+
+            # Kurangi waktu jam2 dengan jam1
+            long_break_duration -= mini_break_duration
+            
+            # Hitung ulang interval
+            interval -= 1
+        else:
+            print(f"\nSisa waktu Long Break: {long_break_duration // 60} menit")
+            print(f"Countdown Long Break: {long_break_duration // 60} menit")
+            countdown(long_break_duration)  # Countdown untuk jam2
+            print("Alarm Long Break berbunyi!")
+            print("Jam sudah habis!")
+            show_popup("Alarm Long Break berbunyi!", long_break_for)  # Tampilkan alarm jam2
+            break
 
 # Run the application
 root.mainloop()
